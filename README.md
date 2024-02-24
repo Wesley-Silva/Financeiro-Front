@@ -13,6 +13,7 @@ O sistema financeiro abrange todas as despesas a serem pagas mensalmente pelo us
 
 ## Tela
   ![Tela](https://github.com/Wesley-Silva/Financeiro-Front/blob/main/src/assets/login.jpg)
+  ![Tela](https://github.com/Wesley-Silva/Financeiro-Front/blob/main/src/assets/dashboard.jpg)
 
 ## Sobre
 
