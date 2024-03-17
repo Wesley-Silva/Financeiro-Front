@@ -8,4 +8,8 @@ export class SistemaFinanceiro
     GerarCopiadespesa: boolean;
     MesCopia: number;
     AnoCopia: number;
+
+    NomePropriedade: string = "";
+    mensagem: string = "";
+    notificacao:[];
 }
