@@ -1,7 +1,14 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Categoria } from 'src/app/models/Categoria';
+import { Despesa } from 'src/app/models/Despesa';
 import { SelectModel } from 'src/app/models/SelectModel';
+import { SistemaFinanceiro } from 'src/app/models/SistemaFinanceiro';
+import { AuthService } from 'src/app/services/auth.service';
+import { CategoriaService } from 'src/app/services/categoria.service';
+import { DespesaService } from 'src/app/services/despesa.service';
 import { MenuService } from 'src/app/services/menu.service';
+import { SistemaService } from 'src/app/services/sistema.service';
 
 @Component({
   selector: 'app-despesa',
@@ -9,16 +16,24 @@ import { MenuService } from 'src/app/services/menu.service';
   styleUrls: ['./despesa.component.css']
 })
 export class DespesaComponent {
-  constructor(public menuService: MenuService, public formBuilder: FormBuilder)
+  constructor(public menuService: MenuService, public formBuilder: FormBuilder,
+    public sistemaService: SistemaService, public authService : AuthService,
+    public categoriaService : CategoriaService,
+    public despesaService: DespesaService
+    )
   {
-    
+
   }
 
-  listSistemas = new Array<SelectModel>();
+  //listSistemas = new Array<SelectModel>();
   sistemaSelect = new SelectModel();
 
   listCategorias = new Array<SelectModel>();
   categoriaSelect = new SelectModel();
+
+  color = 'accent';
+  checked = false;
+  disabled = false;
 
   despesaForm: FormGroup;
 
@@ -35,6 +50,8 @@ export class DespesaComponent {
           categoriaSelect: ['', [Validators.required]],
         }
       )
+
+      this.ListarCategoriaUsuario();
   }
 
   dadosForm(){
@@ -44,6 +61,48 @@ export class DespesaComponent {
   enviar(){
     debugger;
     var dados = this.dadosForm();
-    alert(dados["name"].value)
+    //alert(dados["name"].value)
+
+      let item = new Despesa();
+      item.nome = dados["name"].value;
+      item.id =0;
+      item.valor = dados["valor"].value;
+      item.pago = this.checked;
+      item.dataVencimento = dados["data"].value;
+      item.idCategoria = parseInt(this.categoriaSelect.id);
+
+      this.despesaService.AdicionarDespesa(item)
+      .subscribe((response: Despesa) => {
+
+        this.despesaForm.reset();
+
+      }, (error) => console.error(error),
+        () => { })
+
+  }
+
+  handleChangePago(item: any) {
+    this.checked = item.checked as boolean;
+  }
+
+  ListarCategoriaUsuario() {
+    this.categoriaService.ListarCategoriaUsuario(this.authService.getEmailUser())
+      .subscribe((reponse: Array<Categoria>) => {
+
+        var listaCategorias = [];
+
+        reponse.forEach(x => {
+          var item = new SelectModel();
+          item.id = x.id.toString();
+          item.name = x.nome;
+
+          listaCategorias.push(item);
+
+        });
+
+        this.listCategorias = listaCategorias;
+
+      }
+      )
   }
 }

@@ -10,16 +10,16 @@ import { LoginService } from 'src/app/services/login.service';
   styleUrls: ['./login.component.scss']
 })
 export class LoginComponent {
-  
+
   constructor(public formBuilder: FormBuilder,
     private router: Router,
     private loginService: LoginService,
     public authService: AuthService) {
-        
+
   }
 
   loginForm: FormGroup;
-  
+
   ngOnInit():void {
 
     this.loginForm = this.formBuilder.group
@@ -27,7 +27,7 @@ export class LoginComponent {
       {
         email : ['', [Validators.required, Validators.email]],
         senha : ['', [Validators.required]]
-      }      
+      }
     )
   }
 
@@ -42,6 +42,7 @@ export class LoginComponent {
       .subscribe(
         token => {
           this.authService.setToken(token);
+          this.authService.setEmailUser(this.dadosForm["email"].value);
           this.authService.usuarioAutenticado(true);
           //alert(token);
           this.router.navigate(['/dashboard']);

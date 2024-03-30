@@ -10,9 +10,9 @@ export class AuthService
     private usuarioAutenticadoPortal : boolean = false;
     private token: any;
     private user: any;
-    
+
     constructor(private httpClient: HttpClient) {
-        
+
     }
 
     checkToken()
@@ -56,5 +56,22 @@ export class AuthService
         this.limparToken();
         localStorage.clear();
         sessionStorage.clear();
+    }
+
+    setEmailUser(email:string)
+    {
+      localStorage.setItem('emailUser', email);
+    }
+
+    getEmailUser()
+    {
+      var emailUserLogado = localStorage.getItem('emailUser');
+      if(emailUserLogado)
+      {
+        return emailUserLogado;
+      }else{
+        this.limparDadosUsuario();
+        return "";
+      }
     }
 }

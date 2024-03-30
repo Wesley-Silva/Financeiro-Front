@@ -24,8 +24,8 @@ export class SistemaService {
     return this.httpClient.get(`${this.baseUrl}/ListaSistemaUsuario?emailUsuario=${emailUsuario}`);
   }
 
-  CadastrarUsuarioNoSistema(idSistema: number, emailUsuario: string)
-  {
-    return this.httpClient.post<SistemaFinanceiro>(`${this.baseUrl}/CadastrarUsuarioNoSistema?idSistema=${idSistema}&emailUsuario=${emailUsuario}`, null)
-  }
+  CadastrarUsuarioNoSistema(idSistema: number, emailUsuario : string)
+    {
+        return  this.httpClient.post<any>(`${this.baseUrl}/CadastrarUsuarioNoSistema?idSistema=${idSistema}&emailUsuario=${emailUsuario}`,null)
+    }
 }

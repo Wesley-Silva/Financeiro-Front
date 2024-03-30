@@ -1,6 +1,10 @@
 export class Categoria
 {
-    Id: number;
-    Nome: string;
-    Idsistema:number;
+    id: number;
+    nome: string;
+    idsistema:number;
+
+    nomePropriedade: string = "";
+    mensagem: string = "";
+    notificacao:[];
 }

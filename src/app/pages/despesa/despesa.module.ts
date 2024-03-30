@@ -6,6 +6,7 @@ import { NavBarModule } from "src/app/components/navbar/navbar.module";
 import { SideBarModule } from "src/app/components/sidebar/sidebar.module";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { NgSelectModule } from "@ng-select/ng-select";
+import { MatSlideToggleModule } from "@angular/material/slide-toggle";
 
 @NgModule({
     providers:[],
@@ -17,10 +18,11 @@ import { NgSelectModule } from "@ng-select/ng-select";
         SideBarModule,
         FormsModule,
         ReactiveFormsModule,
-        NgSelectModule
+        NgSelectModule,
+        MatSlideToggleModule
     ]
 })
 
 export class DespesaModule{
-    
+
 }

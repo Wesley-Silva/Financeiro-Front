@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { SistemaFinanceiro } from 'src/app/models/SistemaFinanceiro';
+import { AuthService } from 'src/app/services/auth.service';
 import { MenuService } from 'src/app/services/menu.service';
 import { SistemaService } from 'src/app/services/sistema.service';
 
@@ -12,17 +13,18 @@ import { SistemaService } from 'src/app/services/sistema.service';
 export class SistemaComponent {
   constructor(public menuService: MenuService,
               public formBuilder: FormBuilder,
-              public sistemaService: SistemaService)
+              public sistemaService: SistemaService,
+              public authService:AuthService)
   {
 
   }
 
-  sistemForm: FormGroup;
+  sistemaForm: FormGroup;
 
   ngOnInit(){
       this.menuService.menuSelecionado = 2;
 
-      this.sistemForm = this.formBuilder.group
+      this.sistemaForm = this.formBuilder.group
       (
         {
           name: ['', [Validators.required]]
@@ -31,7 +33,7 @@ export class SistemaComponent {
   }
 
   dadosForm(){
-    return this.sistemForm.controls;
+    return this.sistemaForm.controls;
   }
 
   enviar(){
@@ -39,29 +41,29 @@ export class SistemaComponent {
     var dados = this.dadosForm();
 
     let item = new SistemaFinanceiro();
-    item.Nome = dados["name"].value;
+    item.nome = dados["name"].value;
 
-    item.Id = 0;
+    item.id = 0;
     item.Mes = 0;
-    item.Ano = 0;
-    item.DiaFechamento = 0;
-    item.GerarCopiadespesa = true;
-    item.MesCopia = 0;
-    item.AnoCopia = 0;
+    item.ano = 0;
+    item.diaFechamento = 0;
+    item.gerarCopiadespesa = true;
+    item.mesCopia = 0;
+    item.anoCopia = 0;
 
     this.sistemaService.AdicionarSistemaFinanceiro(item)
-      .subscribe((response: SistemaFinanceiro) =>
-      {
-        this.sistemForm.reset();
+    .subscribe((response: SistemaFinanceiro) => {
 
-        this.sistemaService.CadastrarUsuarioNoSistema(response.Id, "teste@teste.com")
-          .subscribe((response:any) =>
-          {
-            debugger;
-          }),
-          (error) => console.error(error), () => {}
-      }),
-      (error) => console.error(error), () => {}
+      this.sistemaForm.reset();
+
+      this.sistemaService.CadastrarUsuarioNoSistema(response.id,this.authService.getEmailUser())
+      .subscribe((response: any) => {
+        debugger
+      }, (error) => console.error(error),
+        () => { })
+
+    }, (error) => console.error(error),
+      () => { })
     //alert(dados["name"].value)
   }
 }
