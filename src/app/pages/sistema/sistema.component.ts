@@ -122,6 +122,7 @@ ListaSistemaUsuario()
 
       this.sistemaService.CadastrarUsuarioNoSistema(response.id,this.authService.getEmailUser())
       .subscribe((response: any) => {
+        this.ListaSistemaUsuario();
         debugger
       }, (error) => console.error(error),
         () => { })

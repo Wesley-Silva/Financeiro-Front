@@ -1,26 +1,36 @@
-import { HttpClient } from "@angular/common/http";
-import { Injectable } from "@angular/core";
-import { environment } from "src/environments";
-import { Despesa } from "../models/Despesa";
+import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { environment } from 'src/environments';
+import { Despesa } from '../models/Despesa';
+
+
+
 
 @Injectable({
-  providedIn: 'root'
+    providedIn: 'root'
 })
 
 export class DespesaService {
-  constructor(private httpClient : HttpClient) {
 
-  }
+    constructor( private httpClient : HttpClient)
+    {
+    }
 
-  private readonly baseUrl = environment["endPoint"];
+    private readonly baseURL = environment["endPoint"];
 
-  AdicionarDespesa(despesa: Despesa)
-  {
-    return this.httpClient.post<Despesa>(`${this.baseUrl}/AdicionarDespesa`, despesa)
-  }
+    AdicionarDespesa(despesa:Despesa)
+    {
+        return  this.httpClient.post<Despesa>(`${this.baseURL}/AdicionarDespesa`,
+        despesa)
+    }
 
-  ListarDespesasUsuario(emailUsuario: string)
-  {
-    return this.httpClient.get(`${this.baseUrl}/ListarDespesasUsuario?emailUsuario=${emailUsuario}`);
-  }
+
+    ListarDespesasUsuario(emailUsuario:string)
+    {
+        return  this.httpClient.get(`${this.baseURL}/ListarDespesasUsuario?emailUsuario=${emailUsuario}`);
+    }
+
+
+
+
 }

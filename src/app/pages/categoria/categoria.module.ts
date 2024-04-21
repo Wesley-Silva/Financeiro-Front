@@ -6,6 +6,8 @@ import { NavBarModule } from "src/app/components/navbar/navbar.module";
 import { SideBarModule } from "src/app/components/sidebar/sidebar.module";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { NgSelectModule } from "@ng-select/ng-select";
+import { NgxPaginationModule } from "ngx-pagination";
+import { MatIconModule } from "@angular/material/icon";
 
 @NgModule({
     providers:[],
@@ -17,10 +19,14 @@ import { NgSelectModule } from "@ng-select/ng-select";
         SideBarModule,
         FormsModule,
         ReactiveFormsModule,
-        NgSelectModule
+        NgSelectModule,
+        NgxPaginationModule,
+        FormsModule,
+        NgSelectModule,
+        MatIconModule
     ]
 })
 
 export class CategoriaModule{
-    
+
 }
