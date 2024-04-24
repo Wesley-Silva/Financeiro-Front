@@ -12,83 +12,81 @@ import { SistemaService } from 'src/app/services/sistema.service';
 })
 export class SistemaComponent {
 
-tipoTela:number =1; // 1 listagem - 2 cadastro - 3 edição
-tableListSistemas: Array<SistemaFinanceiro>;
-id:string;
+  tipoTela: number = 1;// 1 listagem, 2 cadastro, 3 edição
+  tableListSistemas: Array<SistemaFinanceiro>;
+  id: string;
 
-page: number = 1.
-config: any;
-paginacao: boolean = true;
-itemsPorPagina: number = 10;
+  page: number = 1;
+  config: any;
+  paginacao: boolean = true;
+  itemsPorPagina: number = 10
 
-configpag()
-{
-  this.id = this.gerarIdParaConfigDePaginacao()
+  configpag() {
+    this.id = this.gerarIdParaConfigDePaginacao();
 
-  this.config = {
-    id: this.id,
-    currentPage: this.page,
-    itemsPerPage: this.itemsPorPagina
+    this.config = {
+      id: this.id,
+      currentPage: this.page,
+      itemsPerPage: this.itemsPorPagina
+
+    };
   }
-}
 
-gerarIdParaConfigDePaginacao() {
-  var result = '';
-  var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-  var charactersLength = characters.length;
-  for (var i = 0; i < 10; i++) {
-    result += characters.charAt(Math.floor(Math.random() *
-      charactersLength));
+  gerarIdParaConfigDePaginacao() {
+    var result = '';
+    var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    var charactersLength = characters.length;
+    for (var i = 0; i < 10; i++) {
+      result += characters.charAt(Math.floor(Math.random() *
+        charactersLength));
+    }
+    return result;
   }
-  return result;
-}
 
-cadastro()
-{
-  this.tipoTela = 2;
-  this.sistemaForm.reset();
-}
+  cadastro() {
+    this.tipoTela = 2;
+    this.sistemaForm.reset();
+  }
 
-mudarItemsPorPage() {
-  this.page = 1
-  this.config.currentPage = this.page;
-  this.config.itemsPerPage = this.itemsPorPagina;
-}
+  mudarItemsPorPage() {
+    this.page = 1
+    this.config.currentPage = this.page;
+    this.config.itemsPerPage = this.itemsPorPagina;
+  }
 
-mudarPage(event: any) {
-  this.page = event;
-  this.config.currentPage = this.page;
-}
+  mudarPage(event: any) {
+    this.page = event;
+    this.config.currentPage = this.page;
+  }
 
-ListaSistemaUsuario()
-{
-  this.tipoTela = 1;
 
-  this.sistemaService.ListaSistemaUsuario(this.authService.getEmailUser())
-    .subscribe((response: Array<SistemaFinanceiro>) => {
-      this.tableListSistemas = response;
+  ListaSistemasUsuario() {
+    this.itemEdicao = null;
+    this.tipoTela = 1;
 
-    }, (error) => console.error(error),
-      () => { })
-}
+    this.sistemaService.ListaSistemaUsuario(this.authService.getEmailUser())
+      .subscribe((response: Array<SistemaFinanceiro>) => {
 
-  constructor(public menuService: MenuService,
-              public formBuilder: FormBuilder,
-              public sistemaService: SistemaService,
-              public authService:AuthService)
-  {
+        this.tableListSistemas = response;
 
+      }, (error) => console.error(error),
+        () => { })
+
+  }
+
+  constructor(public menuService: MenuService, public formBuilder: FormBuilder,
+    public sistemaService: SistemaService, public authService: AuthService) {
   }
 
   sistemaForm: FormGroup;
 
-  ngOnInit(){
-      this.menuService.menuSelecionado = 2;
+  ngOnInit() {
+    this.menuService.menuSelecionado = 2;
 
-      this.configpag();
-      this.ListaSistemaUsuario();
+    this.configpag();
+    this.ListaSistemasUsuario();
 
-      this.sistemaForm = this.formBuilder.group
+    this.sistemaForm = this.formBuilder.group
       (
         {
           name: ['', [Validators.required]]
@@ -96,39 +94,83 @@ ListaSistemaUsuario()
       )
   }
 
-  dadosForm(){
+
+  dadorForm() {
     return this.sistemaForm.controls;
   }
 
-  enviar(){
-    debugger;
-    var dados = this.dadosForm();
+  enviar() {
+    debugger
+    var dados = this.dadorForm();
 
-    let item = new SistemaFinanceiro();
-    item.nome = dados["name"].value;
+    if (this.itemEdicao) {
 
-    item.id = 0;
-    item.Mes = 0;
-    item.ano = 0;
-    item.diaFechamento = 0;
-    item.gerarCopiadespesa = true;
-    item.mesCopia = 0;
-    item.anoCopia = 0;
+      this.itemEdicao.nome = dados["name"].value;
+      this.itemEdicao.nomePropriedade="";
+      this.itemEdicao.mensagem="";
+      this.itemEdicao.notificacao=[];
 
-    this.sistemaService.AdicionarSistemaFinanceiro(item)
-    .subscribe((response: SistemaFinanceiro) => {
+      this.sistemaService.AtualizarSistemaFinanceiro(this.itemEdicao)
+      .subscribe((response: SistemaFinanceiro) => {
 
-      this.sistemaForm.reset();
+        this.sistemaForm.reset();
+        this.ListaSistemasUsuario();
 
-      this.sistemaService.CadastrarUsuarioNoSistema(response.id,this.authService.getEmailUser())
-      .subscribe((response: any) => {
-        this.ListaSistemaUsuario();
-        debugger
       }, (error) => console.error(error),
         () => { })
 
-    }, (error) => console.error(error),
-      () => { })
-    //alert(dados["name"].value)
+
+    }
+    else {
+
+      let item = new SistemaFinanceiro();
+      item.nome = dados["name"].value;
+
+      item.id = 0;
+      item.mes = 0;
+      item.ano = 0;
+      item.diaFechamento = 0;
+      item.gerarCopiadespesa = true;
+      item.mesCopia = 0;
+      item.anoCopia = 0;
+
+      this.sistemaService.AdicionarSistemaFinanceiro(item)
+        .subscribe((response: SistemaFinanceiro) => {
+
+          this.sistemaForm.reset();
+
+          this.sistemaService.CadastrarUsuarioNoSistema(response.id, this.authService.getEmailUser())
+            .subscribe((response: any) => {
+
+              this.ListaSistemasUsuario();
+
+            }, (error) => console.error(error),
+              () => { })
+
+        }, (error) => console.error(error),
+          () => { })
+    }
   }
+
+  itemEdicao: SistemaFinanceiro;
+
+  edicao(id: number) {
+    this.sistemaService.ObterSistemaFinanceiro(id)
+      .subscribe((reponse: SistemaFinanceiro) => {
+
+        if (reponse) {
+          this.itemEdicao = reponse;
+          this.tipoTela = 2;
+
+          var dados = this.dadorForm();
+          dados["name"].setValue(this.itemEdicao.nome)
+        }
+
+      },
+        (error) => console.error(error),
+        () => {
+
+        })
+  }
+
 }

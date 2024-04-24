@@ -9,7 +9,7 @@
             <div class="header-info-2">
                 <div class="card-header">
                     <div class="card-title"> Cadastro de Sistemas </div>
-                    <div (click)="ListaSistemaUsuario()" class="card-menu"> Listagem de Sistemas </div>
+                    <div (click)="ListaSistemasUsuario()" class="card-menu"> Listagem de Sistemas </div>
                 </div>
             </div>
         </div>
@@ -67,7 +67,7 @@
                         <td>{{item.id}}</td>
                         <td>{{item.nome}}</td>
 
-                        <td> Edit</td>
+                        <td (click)="edicao(item.id)"> Edit</td>
 
                     </tr>
                 </tbody>
