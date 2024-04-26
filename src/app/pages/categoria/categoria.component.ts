@@ -112,25 +112,40 @@ ListarCategoriaUsuario()
     debugger
     var dados = this.dadorForm();
 
-    let item = new Categoria();
-    item.nome = dados["name"].value;
-    item.id =0;
-    item.idsistema = parseInt(this.sistemaSelect.id)
+    if (this.itemEdicao) {
+      this.itemEdicao.nome = dados["name"].value;
+      this.itemEdicao.idSistema = parseInt(this.sistemaSelect.id)
+      this.itemEdicao.nomePropriedade = ""
+      this.itemEdicao.mensagem = ""
+      this.itemEdicao.notificacao = [];
 
-    this.categoriaService.AdicionarCategoria(item)
-    .subscribe((response: Categoria) => {
+      this.categoriaService.AtualizarCategoria(this.itemEdicao)
+      .subscribe((response: Categoria) => {
+        this.categoriaForm.reset();
+        this.ListarCategoriaUsuario()
+      }, (error) => console.error(error),
+        () => { })
+    }
+    else {
+      let item = new Categoria();
+      item.nome = dados["name"].value;
+      item.id =0;
+      item.idSistema = parseInt(this.sistemaSelect.id)
 
-      this.categoriaForm.reset();
+      this.categoriaService.AdicionarCategoria(item)
+      .subscribe((response: Categoria) => {
 
-      this.ListarCategoriaUsuario()
+        this.categoriaForm.reset();
 
-    }, (error) => console.error(error),
-      () => { })
+        this.ListarCategoriaUsuario()
 
+      }, (error) => console.error(error),
+        () => { })
+    }
   }
 
-
-  ListaSistemasUsuario() {
+  // carrega combo
+  ListaSistemasUsuario(id:number=null) {
     this.sistemaService.ListaSistemaUsuario(this.authService.getEmailUser())
       .subscribe((reponse: Array<SistemaFinanceiro>) => {
 
@@ -140,17 +155,39 @@ ListarCategoriaUsuario()
           var item = new SelectModel();
           item.id = x.id.toString();
           item.name = x.nome;
-
           lisSistemaFinanceiro.push(item);
+
+          // se id não for null && id == x.id
+          if (id && id == x.id) {
+            this.sistemaSelect = item;
+          }
 
         });
 
         this.listSistemas = lisSistemaFinanceiro;
-
       }
-
       )
   }
 
+  itemEdicao: Categoria;
 
+  edicao(id: number) {
+    this.categoriaService.ObterCategoria(id)
+      .subscribe((response: Categoria) => {
+
+        if (response) {
+          this.itemEdicao = response;
+          this.tipoTela = 2;
+          var sistema = response;
+          var dados = this.dadorForm();
+          dados["name"].setValue(this.itemEdicao.nome)
+          this.ListaSistemasUsuario(response.idSistema)
+        }
+
+      },
+        (error) => console.error(error),
+        () => {
+
+        })
+  }
 }

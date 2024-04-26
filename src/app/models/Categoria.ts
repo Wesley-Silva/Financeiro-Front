@@ -2,7 +2,7 @@ export class Categoria
 {
     id: number;
     nome: string;
-    idsistema:number;
+    idSistema:number;
 
     nomePropriedade: string = "";
     mensagem: string = "";

@@ -126,6 +126,28 @@ ListarDespesasUsuario()
     var dados = this.dadosForm();
     //alert(dados["name"].value)
 
+    if (this.itemEdicao) {
+      this.itemEdicao.nome = dados["name"].value;
+      this.itemEdicao.valor = dados["valor"].value;
+      this.itemEdicao.pago = this.checked;
+      this.itemEdicao.dataVencimento = dados["data"].value;
+      this.itemEdicao.idCategoria = parseInt(this.categoriaSelect.id);
+
+      this.itemEdicao.nomePropriedade = "";
+      this.itemEdicao.mensagem = "";
+      this.itemEdicao.notificacao = [];
+
+      this.despesaService.AtualizarDespesa(this.itemEdicao)
+        .subscribe((response: Despesa) => {
+
+          this.despesaForm.reset();
+          this.ListarDespesasUsuario();
+
+        }, (error) => console.error(error),
+          () => { })
+    }
+    else
+    {
       let item = new Despesa();
       item.nome = dados["name"].value;
       item.id =0;
@@ -143,14 +165,14 @@ ListarDespesasUsuario()
 
       }, (error) => console.error(error),
         () => { })
-
+    }
   }
 
   handleChangePago(item: any) {
     this.checked = item.checked as boolean;
   }
 
-  ListarCategoriaUsuario() {
+  ListarCategoriaUsuario(id:number = null) {
     this.categoriaService.ListarCategoriaUsuario(this.authService.getEmailUser())
       .subscribe((reponse: Array<Categoria>) => {
 
@@ -160,8 +182,11 @@ ListarDespesasUsuario()
           var item = new SelectModel();
           item.id = x.id.toString();
           item.name = x.nome;
-
           listaCategorias.push(item);
+
+          if (id && id == x.id) {
+            this.categoriaSelect = item;
+          }
 
         });
 
@@ -169,5 +194,40 @@ ListarDespesasUsuario()
 
       }
       )
+  }
+
+  itemEdicao: Despesa;
+
+  edicao(id: number) {
+    this.despesaService.ObterDespesa(id)
+      .subscribe((response: Despesa) => {
+
+        if (response) {
+          this.itemEdicao = response;
+          this.tipoTela = 2;
+          this.ListarCategoriaUsuario(response.idCategoria);
+          var dados = this.dadosForm();
+          dados["name"].setValue(this.itemEdicao.nome)
+
+          var dateToString = response.dataVencimento.toString();
+          var dateFull = dateToString.split('-');
+          var dayFull = dateFull[2].split('T');
+          var day = dayFull[0];
+          var month = dateFull[1];
+          var year = dateFull[0];
+
+          var dateInput = year + '-' + month + '-' + day;
+
+          dados["data"].setValue(dateInput);
+          dados["valor"].setValue(response.valor);
+
+          this.checked = response.pago;
+        }
+
+      },
+        (error) => console.error(error),
+        () => {
+
+        })
   }
 }

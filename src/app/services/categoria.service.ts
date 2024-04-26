@@ -23,4 +23,14 @@ export class CategoriaService {
   {
     return this.httpClient.get(`${this.baseUrl}/ListarCategoriaUsuario?emailUsuario=${emailUsuario}`);
   }
+
+  ObterCategoria(id: number)
+  {
+    return this.httpClient.get(`${this.baseUrl}/ObterCategoria?id=${id}`);
+  }
+
+  AtualizarCategoria(categoria: Categoria) {
+    return this.httpClient.put<Categoria>(`${this.baseUrl}/AtualizarCategoria`,
+    categoria)
+  }
 }
